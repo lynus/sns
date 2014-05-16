@@ -11,7 +11,7 @@
 static void getxy(float _scale, Vec2f p, int &x, int &y)
 {
 	int scale = (int)ceil(_scale);
-	//空间编号从零开始
+	//subspace is indexed from zero
 	x =(int)( p.x*pow(2.0,scale));
 	y =(int) (p.y*pow(2.0,scale));
 }
@@ -41,8 +41,6 @@ void node::draw()
 	ci::Vec2i reso = ci::app::AppNative::get()->getWindowSize();
 	ci::Vec2f v(reso.x*pos.x,reso.y*pos.y);
 	ci::gl::drawSolidCircle( ci::Vec2f(reso.x*pos.x,reso.y*pos.y),3);
-	//ci::gl::drawSphere(ci::Vec3f(reso.x*pos.x,reso.y*pos.y,0),5);
-	//ci::gl::vertex(pos*900);
 }
 
 void nodecontroller::draw()
@@ -63,7 +61,7 @@ void nodecontroller::update()
 	int xth, yth;
 	getxy(e->scale, p, xth, yth);
 	comm *io = comm::get();
-	/* XXX 太粗暴的做法，等下想想更delicate的做法
+	/*XXX 太粗暴的做法，等下想想更delicate的做法
 	*/
 	nodeset.clear();
 	io->getNodes(this->nodeset,static_cast<int>(ceil(e->scale)),xth,yth);

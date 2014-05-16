@@ -18,6 +18,5 @@ public:
 	Vec3f pos;
 	float scale;
 	bool need_update;
-	CameraPersp	 cam;
 	static eye *instance;
 };

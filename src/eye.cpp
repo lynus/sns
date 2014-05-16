@@ -22,10 +22,7 @@ void eye::init(Vec3f _pos,float ratio)
 {
 	pos = _pos;
 	scale= -log(sqrt(2.0)*pos.z)/log(2.0);
-	//cam.setPerspective(90.0f, ratio,0.0f,1.0f);
 	need_update = true;
-	//gl::setMatricesWindow(800,800);
-
 }
 
 void eye::setClose(float z_delta)
