@@ -40,7 +40,7 @@ void snsApp::setup()
 {
 	if (io.isConnected() != true)
 		app::AppNative::get()->quit();
-	myeye.init(Vec3f(0.5f,0.5f,sqrt(2.0f)/2+0.3), getWindowAspectRatio());
+	myeye.init(Vec3f(0.5f,0.5f,sqrt(2.0f)/2), getWindowAspectRatio());
 	io.setupNodes(controller);
 }
 

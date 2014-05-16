@@ -5,6 +5,7 @@
 #include <ostream>
 #include "eye.h"
 #include "cinder\CinderMath.h"
+#include "config.h"
 
 using namespace ci;
 
@@ -21,8 +22,9 @@ void eye::init(Vec3f _pos,float ratio)
 {
 	pos = _pos;
 	scale= -log(sqrt(2.0)*pos.z)/log(2.0);
-	cam.setPerspective(70.0f, ratio,-1.0f,1.0f);
+	//cam.setPerspective(90.0f, ratio,0.0f,1.0f);
 	need_update = true;
+	//gl::setMatricesWindow(800,800);
 
 }
 
@@ -40,25 +42,32 @@ void eye::update()
 	if (need_update == false)
 		return;
 	//upleft position of the viewport
-	ci::Vec2i reso = ci::app::AppNative::get()->getWindowSize();
+	/*ci::Vec2i reso = ci::app::AppNative::get()->getWindowSize();
 	float realheight = pos.z*reso.y;
 	ci::Vec3f realpos(pos.x*reso.x, pos.y*reso.y,realheight);
 	cam.lookAt(realpos,Vec3f(pos.x*reso.x,pos.y*reso.y,0.0),Vec3f::yAxis());
 	gl::setModelView(cam);
-	need_update = false;
+	need_update = false;*/
+	//glMatrixMode(GL_MODELVIEW);
+	gl::pushMatrices();
+	gl::translate(Vec3f(0.5f,0.5f,0.0f)*800);
+	gl::scale(Vec2f(pow(2,scale),pow(2,scale)));
+	gl::translate(Vec3f(-0.5f,-0.5f,0.0f)*800);
+	gl::translate(-Vec2f(pos.x-0.5,pos.y-0.5)*800);
+	//glOrtho(0,config::get()->win_width,0,config::get()->win_height,0.0f,1.0f);
 }
 
 void eye::setPos(int dir, float delta)
 {
 	if (dir == VERTICAL) {
-		pos.y += delta;
+		pos.y += delta/scale;
 		if (scale >= 0.0f)
 			pos.y = constrain( pos.y,static_cast<float>(pow(2,-scale)/2),1.0f-static_cast<float>(pow(2,-scale)/2));
 		else 
 			pos.y = constrain(pos.y,1.0f-static_cast<float>(pow(2,-scale)/2),static_cast<float>(pow(2,-scale)/2));
 	}
 	if (dir == HORIZONAL) {
-		pos.x += delta;
+		pos.x += delta/scale;
 		if (scale >= 0.0f)
 			pos.x = constrain(pos.x,static_cast<float>(pow(2,-scale)/2),1.0f-static_cast<float>(pow(2,-scale)/2));
 		else

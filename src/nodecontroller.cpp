@@ -50,6 +50,7 @@ void nodecontroller::draw()
 	auto it = nodeset.begin();
 	for( ;it != nodeset.end(); it++)
 		it->second.draw();
+	gl::popMatrices();
 }
 
 void nodecontroller::update()
