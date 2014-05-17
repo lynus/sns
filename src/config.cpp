@@ -4,6 +4,15 @@
 #include <fstream>
 #include <cstring>
 using namespace std;
+static string & trim(string &s) 
+{
+	 if (s.empty()) {  
+        return s;  
+	 }  
+    s.erase(0,s.find_first_not_of(" "));  
+    s.erase(s.find_last_not_of(" ") + 1);  
+    return s;  
+}  
 config::config(){
 	string line,key,value;
 	map<string,string> option;
@@ -18,8 +27,10 @@ config::config(){
 		fconfig.getline(buf,256);
 		line = string(buf);
 		pos = line.find('=');
-		key=line.substr(0,pos);
-		value = line.substr(pos+1);
+		key= trim(line.substr(0,pos));
+		if (key[0] == '#')
+			continue;
+		value = trim(line.substr(pos+1));
 		option[key]=value;
 	}
 	ip = option[string("ip")];

@@ -119,7 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\Service.java" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="config.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

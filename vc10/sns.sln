@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sns", "sns.vcxproj", "{45DE129C-685F-49CE-B75D-30609B4BAD46}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network_test", "..\network_test\network_test.vcxproj", "{087402BB-EF42-40B9-B3DC-2D8641D1BCBB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -14,10 +12,6 @@ Global
 		{45DE129C-685F-49CE-B75D-30609B4BAD46}.Debug|Win32.Build.0 = Debug|Win32
 		{45DE129C-685F-49CE-B75D-30609B4BAD46}.Release|Win32.ActiveCfg = Release|Win32
 		{45DE129C-685F-49CE-B75D-30609B4BAD46}.Release|Win32.Build.0 = Release|Win32
-		{087402BB-EF42-40B9-B3DC-2D8641D1BCBB}.Debug|Win32.ActiveCfg = Debug|Win32
-		{087402BB-EF42-40B9-B3DC-2D8641D1BCBB}.Debug|Win32.Build.0 = Debug|Win32
-		{087402BB-EF42-40B9-B3DC-2D8641D1BCBB}.Release|Win32.ActiveCfg = Release|Win32
-		{087402BB-EF42-40B9-B3DC-2D8641D1BCBB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
