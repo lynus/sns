@@ -58,14 +58,15 @@ void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y)
 	size_t n;
 	char b[32];
 	node node;
-	int num,id;
+	int num,id,range;
 	ss<<x<<','<<y<<','<<scale<<std::endl;
 	try{ 
 		n = sock.write_some(buf.data());
 		buf.consume(n);
 		int nRead =0;
-		read(sock,buffer(b,4));
+		read(sock,buffer(b,8));
 		nRead = *(int *)b;
+		range = *(int *)(b+4);
 		for (int i=0; i<nRead; i++) {
 			read(sock,buffer(b,16));
 			id = *(int *)b;
@@ -73,7 +74,7 @@ void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y)
 			y = *(int *)(b+8);
 			num = *(int *)(b+12);
 			node.id=id; node.num=num;
-			node.pos=ci::Vec2f((float)(x/10000.0), (float)(y/10000.0));
+			node.pos=ci::Vec2f(((float)x/range),((float)y/range));
 			//notice id is not available 
 			nodeset[i]=node;
 			
