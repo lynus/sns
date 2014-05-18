@@ -3,6 +3,7 @@
 #include "cinder/gl/gl.h"
 #include "eye.h"
 #include "comm.h"
+#include "config.h"
 #include "cinder\app\AppNative.h"
 #include <map>
 
@@ -38,9 +39,16 @@ void nodecontroller::randomset()
 		
 void node::draw()
 {
-	ci::Vec2i reso = ci::app::AppNative::get()->getWindowSize();
-	ci::Vec2f v(reso.x*pos.x,reso.y*pos.y);
-	ci::gl::drawSolidCircle( ci::Vec2f(reso.x*pos.x,reso.y*pos.y),3);
+	int win_width = config::get()->win_width;
+	int win_height = config::get()->win_height;
+	float radius = 5/pow(2,eye::get()->scale);
+	if (eye::get()->scale<3.3) {
+		ci::gl::drawSolidCircle( ci::Vec2f(win_width*pos.x,win_height*pos.y),radius);
+	}else {
+		ci::Rectf r = ci::Rectf( pos.x*win_width-radius, pos.y*win_height-radius,
+							pos.x*win_width+radius, pos.y*win_height+radius);
+		gl::drawSolidRect(r);
+	}
 }
 
 void nodecontroller::draw()

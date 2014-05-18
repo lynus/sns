@@ -55,10 +55,10 @@ void snsApp::keyDown( KeyEvent event)
 		this->quit();
 		break;
 	case 'w':
-		myeye.setClose(-0.1f);
+		myeye.setClose(0.1f);
 		break;
 	case 's':
-		myeye.setClose(+0.1f);
+		myeye.setClose(-0.1f);
 		break;
 	case 'f':
 		AppNative::get()->setFullScreen(0);

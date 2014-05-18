@@ -27,10 +27,11 @@ void eye::init(Vec3f _pos,float ratio)
 
 void eye::setClose(float z_delta)
 {
-	pos.z += z_delta;
+	/*pos.z += z_delta;
 	float t = sqrt(2.0)* pos.z;
 	float new_scale = -log(t)/log(2.0);
-	scale = new_scale;
+	scale = new_scale;*/
+	scale +=z_delta;
 	need_update = true;
 }
 
