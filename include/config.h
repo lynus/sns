@@ -1,4 +1,5 @@
 #include <string>
+#define CONFIG(data) (config::get()->data)
 class config 
 {
 public:

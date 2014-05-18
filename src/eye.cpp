@@ -21,10 +21,17 @@ static void getxy(float _scale, Vec2f p, int &x, int &y)
 void eye::init(Vec3f _pos,float ratio) 
 {
 	pos = _pos;
-	scale= -log(sqrt(2.0)*pos.z)/log(2.0);
+	scale= 0;
 	need_update = true;
 }
 
+void eye::reset()
+{
+	pos = ci::Vec3f(0.5f,0.5f,0.0f);
+	scale = 0.0f;
+	pos.z = pow(2,-scale-0.5);
+	need_update = true;
+}
 void eye::setClose(float z_delta)
 {
 	/*pos.z += z_delta;

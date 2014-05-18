@@ -36,11 +36,11 @@ void comm::setupNodes(nodecontroller &controller)
 		nodepair p;
 		time_t t1 = ::time(NULL);
 		for(int i=0; i<nr_edge;i++) {
-			n=read(sock,buffer(b,9));
+			n=read(sock,buffer(b,8));
 			n1 = *(int *)b;
 			n2 = *(int*)(b+4);
 			nr_line++;
-			assert(n1&&n2);
+			assert(n1||n2);
 			p = nodepair(n1,n2);
 			controller.addedge(p);
 		}

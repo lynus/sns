@@ -51,11 +51,22 @@ void node::draw()
 	}
 }
 
+void nodecontroller::drawEdge()
+{
+	auto it = edgeset.begin();
+	node n1,n2;
+	for ( ; it != edgeset.end(); it++) {
+		n1 = nodeset[it->first.first];
+		n2 = nodeset[it->first.second];
+		gl::drawLine(n1.pos*CONFIG(win_width),n2.pos*CONFIG(win_height));
+	}
+}
 void nodecontroller::draw()
 {
 	auto it = nodeset.begin();
 	for( ;it != nodeset.end(); it++)
 		it->second.draw();
+	//drawEdge();
 	gl::popMatrices();
 }
 
@@ -63,15 +74,20 @@ void nodecontroller::update()
 {
 	//现在先不使用定时器，先强制每次系统update时候，向服务器要数据
 	//以后实现定时器，不需每次都要更新数据
+	if (is_stoped)
+		return;
 	eye *e = eye::get();
+	comm *io = comm::get();
 	ci::Vec2f p = ci::Vec2f(max(0.0, e->pos.x - e->pos.z*sqrt(2.0)/2),
 							max(0.0, e->pos.y - e->pos.z*sqrt(2.0)/2));
 	int xth, yth;
 	getxy(e->scale, p, xth, yth);
-	comm *io = comm::get();
 	/*XXX 太粗暴的做法，等下想想更delicate的做法
 	*/
 	nodeset.clear();
-	io->getNodes(this->nodeset,static_cast<int>(ceil(e->scale)),xth,yth);
+	if (e->scale <= 0.0f)
+		io->getNodes(this->nodeset,0,xth,yth);
+	else
+		io->getNodes(this->nodeset,static_cast<int>(ceil(e->scale)),xth,yth);
 	
 }

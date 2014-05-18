@@ -11,6 +11,7 @@ public:
 	void setClose(float z_delta);
 	void update();
 	void setPos(int dir, float delta);
+	void reset();
 	enum{
 		VERTICAL	=0,
 		HORIZONAL	=1

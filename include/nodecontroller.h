@@ -32,7 +32,12 @@ public:
 	inline void addedge(const nodepair &pair) { edgeset[pair]=true;}
 	void randomset();
 	void draw();
+	void drawEdge();
 	void update();
 	void needUpdateNow();
+	 void swi(){ is_stoped = !is_stoped;};
+	inline void start() {is_stoped = false;};
+private:
+	bool is_stoped;
 };
 
