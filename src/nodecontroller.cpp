@@ -39,26 +39,25 @@ void nodecontroller::randomset()
 		
 void node::draw()
 {
-	if (id != -1)
+	if (id == -2)
 		gl::color(1.0f,1.0f,1.0f);
 	else if(id == -1)
 		gl::color(1.0f,0.0f,0.0f);
 	else 
-		gl::color(0.0f,1.0f,0.0f);
+		gl::color(1.0f*weight,0.0f,1.0f*(1-weight));
+		
 	int win_width = config::get()->win_width;
 	int win_height = config::get()->win_height;
-	float radius = 5/pow(2,eye::get()->scale);
-	if (eye::get()->scale<3.3) {
-		ci::gl::drawSolidCircle( ci::Vec2f(win_width*pos.x,win_height*pos.y),radius);
-	}else {
-		ci::Rectf r = ci::Rectf( pos.x*win_width-radius, pos.y*win_height-radius,
+	float radius = 3/pow(2,eye::get()->scale);
+	ci::Rectf r = ci::Rectf( pos.x*win_width-radius, pos.y*win_height-radius,
 							pos.x*win_width+radius, pos.y*win_height+radius);
-		gl::drawSolidRect(r);
-	}
+	gl::drawSolidRect(r);
+	
 }
 
 void nodecontroller::drawEdge()
 {
+	gl::color(1.0f,1.0f,1.0f,0.8);
 	auto it = edgeset.begin();
 	node n1,n2;
 	for ( ; it != edgeset.end(); it++) {
@@ -69,10 +68,10 @@ void nodecontroller::drawEdge()
 }
 void nodecontroller::draw()
 {
+	drawEdge();
 	auto it = nodeset.begin();
 	for( ;it != nodeset.end(); it++)
 		it->second.draw();
-	drawEdge();
 	gl::popMatrices();
 }
 
@@ -86,16 +85,21 @@ void nodecontroller::update()
 	comm *io = comm::get();
 	ci::Vec2f p = ci::Vec2f(max(0.0, e->pos.x - e->pos.z*sqrt(2.0)/2),
 							max(0.0, e->pos.y - e->pos.z*sqrt(2.0)/2));
-	int xth, yth;
+	int xth, yth,_range;
 	getxy(e->scale, p, xth, yth);
 	/*XXX 太粗暴的做法，等下想想更delicate的做法
 	*/
-	nodeset.clear();
+	//nodeset.clear();
 	if (e->scale <= 0.0f)
-		io->getNodes(this->nodeset,0,xth,yth);
+		io->getNodes(this->nodeset,0,xth,yth,_range);
 	else
-		io->getNodes(this->nodeset,static_cast<int>(ceil(e->scale)),xth,yth);
-	
+		io->getNodes(this->nodeset,static_cast<int>(ceil(e->scale)),xth,yth,_range);
+	if (last_range == -1)
+		last_range = _range;
+	else if(_range != last_range) {
+		e->scale += 1;
+		last_range = _range;
+	}
 }
 
 void nodecontroller::getSelectNode(float mx,float my)
