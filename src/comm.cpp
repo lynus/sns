@@ -18,6 +18,7 @@ comm::comm():sock(ios),ss(&buf),cmd_bytes_readable(true){
 	catch(std::exception &e) {
 		isconnected = false;
 	}
+	need_reset = 0;
 }
 
 void comm::setupNodes(nodecontroller &controller)
@@ -59,6 +60,18 @@ void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y)
 	char b[32];
 	node node;
 	int num,id,range;
+	if (need_reset) {
+		ss<<"Reset"<<std::endl;
+		try {
+			n = sock.write_some(buf.data());
+			buf.consume(n);
+			need_reset = 0;
+			return;
+		}catch (std::exception &e) {
+			ci::app::AppNative::get()->console()<<e.what()<<std::endl;
+			return;
+		}
+	}
 	ss<<x<<','<<y<<','<<scale<<std::endl;
 	try{ 
 		n = sock.write_some(buf.data());
@@ -84,3 +97,8 @@ void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y)
 		return;
 	}    
 }
+
+void comm::reset() {
+	need_reset = 1;
+}
+	
