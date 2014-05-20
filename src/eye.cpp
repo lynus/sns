@@ -80,3 +80,9 @@ void eye::setPos(int dir, float delta)
 	}
 	need_update = true;
 }
+
+void eye::convertMouse(float &mx, float &my)
+{
+	mx = (mx-pos.x)/pow(2,scale)+0.5;
+	my = (my-pos.y)/pow(2,scale)+0.5;
+}

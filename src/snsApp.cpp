@@ -53,6 +53,14 @@ void snsApp::setup()
 
 void snsApp::mouseDown( MouseEvent event )
 {
+	if ( event.isLeft() && !controller.is_start() ) {
+		float mouse_x = (float)event.getX()/CONFIG(win_width);
+		float mouse_y = (float)event.getY()/CONFIG(win_height);
+		//mouse's position need to be convert back to node's space 
+		//in order to perform selection detection
+		myeye.convertMouse(mouse_x,mouse_y);
+		controller.getSelectNode(mouse_x,mouse_y);
+	}
 }
 
 void snsApp::keyDown( KeyEvent event)

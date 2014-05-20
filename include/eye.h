@@ -12,6 +12,7 @@ public:
 	void update();
 	void setPos(int dir, float delta);
 	void reset();
+	void convertMouse(float &mx, float &my);
 	enum{
 		VERTICAL	=0,
 		HORIZONAL	=1

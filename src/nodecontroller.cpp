@@ -39,6 +39,12 @@ void nodecontroller::randomset()
 		
 void node::draw()
 {
+	if (id != -1)
+		gl::color(1.0f,1.0f,1.0f);
+	else if(id == -1)
+		gl::color(1.0f,0.0f,0.0f);
+	else 
+		gl::color(0.0f,1.0f,0.0f);
 	int win_width = config::get()->win_width;
 	int win_height = config::get()->win_height;
 	float radius = 5/pow(2,eye::get()->scale);
@@ -66,7 +72,7 @@ void nodecontroller::draw()
 	auto it = nodeset.begin();
 	for( ;it != nodeset.end(); it++)
 		it->second.draw();
-	//drawEdge();
+	drawEdge();
 	gl::popMatrices();
 }
 
@@ -90,4 +96,22 @@ void nodecontroller::update()
 	else
 		io->getNodes(this->nodeset,static_cast<int>(ceil(e->scale)),xth,yth);
 	
+}
+
+void nodecontroller::getSelectNode(float mx,float my)
+{
+	// find the closest node and close enough 
+	auto sit = nodeset.end();
+	float dis = 1.0f;
+	float _dis;
+	for (auto it = nodeset.begin(); it != nodeset.end(); it++) 
+		if ( (_dis=sqrt( pow((mx-(it->second.pos.x)),2)+ pow((my-(it->second.pos.y)),2) )) <dis) {
+			dis = _dis;
+			sit = it;
+		}
+	if (sit != nodeset.end() && dis < 0.005)
+		sit->second.id = -1;
+	node n;
+	n.set(-2,Vec2f(mx,my),3);
+	//addnode(n);
 }
