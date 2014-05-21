@@ -77,9 +77,9 @@ void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y,int &range
 	try{ 
 		//handle mouse drag
 		int sid = nodecontroller::get()->selected_node;
-		if (sid  != -1) {
-			node _node = nodeset[sid];
-			ss<<"drag\n"<<_node.id<<','<<_node.pos.x<<','<<_node.pos.y<<'\n';
+		if (sid  != -1){
+			node = nodeset[sid];
+			ss<<"drag\n"<<node.id<<','<<node.pos.x<<','<<node.pos.y<<'\n';
 			n = sock.write_some(buf.data());
 			buf.consume(n);
 		}
