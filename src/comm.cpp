@@ -54,12 +54,13 @@ void comm::setupNodes(nodecontroller &controller)
 	//controller.addnodes(nr_node);
 }
 
-void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y)
+void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y,int &range)
 {
 	size_t n;
 	char b[32];
 	node node;
-	int num,id,range;
+	int num,id;
+	float weight;
 	if (need_reset) {
 		ss<<"Reset"<<std::endl;
 		try {
@@ -88,9 +89,21 @@ void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y)
 			num = *(int *)(b+12);
 			node.id=id; node.num=num;
 			node.pos=ci::Vec2f(((float)x/range),((float)y/range));
+			node.weight = nodeset[id].weight;
 			//notice id is not available 
-			nodeset[i]=node;
-			
+			nodeset[id]=node;			
+		}
+		// check weight is ready to transfer
+		read(sock,buffer(b,4));
+		if ( *(int *)b == 1) {
+			read(sock,buffer(b,8));
+			float max = *(int *)b;
+			float min = *(int *)(b+4);
+			for(int i=0; i<nodeset.size();i++) {
+				read(sock,buffer(b,4));
+				weight = (*(int *)b - min)/(float)(max-min);
+				nodeset[i].weight = weight;
+			}
 		}
 	}catch(std::exception &e) {
 		ci::app::AppNative::get()->console()<<e.what()<<std::endl;

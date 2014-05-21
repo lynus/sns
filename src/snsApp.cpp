@@ -14,15 +14,19 @@ using namespace std;
 comm * comm::instance=NULL;
 eye * eye::instance=NULL;
 config * config::instance=NULL;
+nodecontroller *nodecontroller::instance=NULL;
+
 class snsApp : public AppNative {
   public:
-	  snsApp():AppNative(),io(),myconfig(){isfullscreen=false;};
+	  snsApp():AppNative(),io(),myconfig(),controller(){isfullscreen=false;};
 	  void prepareSettings( Settings *settings );
 	void setup();
 	void mouseDown( MouseEvent event );	
+	void mouseWheel( MouseEvent event );
 	void keyDown( KeyEvent event);
 	void update();
 	void draw();
+	void reset() {io.reset();};
 	config myconfig;
 	nodecontroller controller;
 	eye myeye;
@@ -47,8 +51,9 @@ void snsApp::setup()
 	io.setupNodes(controller);
 	controller.start();
 	panelUI =  params::InterfaceGl::create( "network visualizer", Vec2i( 200, 160 ) );
-	panelUI->addParam("Zooms", &myeye.scale);
-	panelUI->addParam("eye location", &myeye.pos,"",true);
+	panelUI->addParam("Zoom", &myeye.scale);
+	panelUI->addParam("Eye Location", &myeye.pos,"",true);
+	panelUI->addButton("Reset",std::bind(&snsApp::reset,this));
 }
 
 void snsApp::mouseDown( MouseEvent event )
@@ -62,7 +67,11 @@ void snsApp::mouseDown( MouseEvent event )
 		controller.getSelectNode(mouse_x,mouse_y);
 	}
 }
-
+void snsApp::mouseWheel( MouseEvent event)
+{
+	float  wheel = event.getWheelIncrement();
+	myeye.setClose(wheel/10);
+}
 void snsApp::keyDown( KeyEvent event)
 {
 	switch (event.getChar()) {
@@ -72,11 +81,19 @@ void snsApp::keyDown( KeyEvent event)
 		break;
 	case 'W':
 	case 'w':
-		myeye.setClose(0.1f);
+		myeye.setPos(eye::VERTICAL, -0.1f);
 		break;
 	case 'S':
 	case 's':
-		myeye.setClose(-0.1f);
+		myeye.setPos(eye::VERTICAL, +0.1f);
+		break;
+	case 'A':
+	case 'a':
+		myeye.setPos(eye::HORIZONAL, -0.1f);
+		break;
+	case 'd':
+	case 'D':
+		myeye.setPos(eye::HORIZONAL, +0.1f);
 		break;
 	case 'F':
 	case 'f':
@@ -85,6 +102,10 @@ void snsApp::keyDown( KeyEvent event)
 	case 'R':
 	case 'r':
 		myeye.reset();
+		break;
+	case 'x':
+		io.reset();
+		break;
 	default:
 		break;
 	}
@@ -112,8 +133,8 @@ void snsApp::keyDown( KeyEvent event)
 void snsApp::update()
 {
 	//eye has updated by dealing with user input
-	myeye.update();
 	controller.update();
+	myeye.update();
 }
 
 void snsApp::draw()

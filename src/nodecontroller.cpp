@@ -48,9 +48,10 @@ void node::draw()
 		
 	int win_width = config::get()->win_width;
 	int win_height = config::get()->win_height;
-	float radius = 3/pow(2,eye::get()->scale);
-	ci::Rectf r = ci::Rectf( pos.x*win_width-radius, pos.y*win_height-radius,
-							pos.x*win_width+radius, pos.y*win_height+radius);
+	float radius = (float)500/(nodecontroller::get()->getRange());
+	radius = constrain(radius,0.00001f,0.0005f);
+	ci::Rectf r = ci::Rectf( (pos.x - radius)*win_width, (pos.y-radius)*win_height,
+							(pos.x+radius)*win_width, (pos.y+radius)*win_height);
 	gl::drawSolidRect(r);
 	
 }
@@ -60,14 +61,19 @@ void nodecontroller::drawEdge()
 	gl::color(1.0f,1.0f,1.0f,0.8);
 	auto it = edgeset.begin();
 	node n1,n2;
+	//glEnable(GL_LINE_STIPPLE);
+	glLineStipple(3,0x5555);
 	for ( ; it != edgeset.end(); it++) {
 		n1 = nodeset[it->first.first];
 		n2 = nodeset[it->first.second];
 		gl::drawLine(n1.pos*CONFIG(win_width),n2.pos*CONFIG(win_height));
 	}
+	//glDisable(GL_LINE_STIPPLE);
 }
 void nodecontroller::draw()
 {
+	if (is_stoped)
+		return;
 	drawEdge();
 	auto it = nodeset.begin();
 	for( ;it != nodeset.end(); it++)

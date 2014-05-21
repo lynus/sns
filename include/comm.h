@@ -12,8 +12,9 @@ public:
 		ci::app::AppNative::get()->console()<<"comm desctrut!!"<<std::endl;
 	}
 	void setupNodes(nodecontroller &controller);
-	void getNodes(nodecontroller::NS &nodeset,int scale,int x,int y);
+	void getNodes(nodecontroller::NS &nodeset,int scale,int x,int y, int &range);
 	inline bool isConnected() {return isconnected;};
+	void reset();
 private:
 	static comm *instance;
 	socket_base::bytes_readable cmd_bytes_readable;
@@ -23,5 +24,6 @@ private:
 	ip::tcp::endpoint remote;
 	ip::tcp::socket sock;
 	bool isconnected;
+	bool need_reset;
 };
 	

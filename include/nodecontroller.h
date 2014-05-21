@@ -11,6 +11,7 @@ public:
 	int id;
 	int num;
 	float radius;
+	float weight;
 	void draw();
 	inline void set(int _id, ci::Vec2f _pos, float r) {
 		id= _id;
@@ -26,7 +27,9 @@ class nodecontroller {
 public:
 	typedef std::map<int,node> NS;
 	nodecontroller(int nr_node);
-	nodecontroller() {};
+	nodecontroller() { last_range = -1; instance = this;};
+	static nodecontroller * get(){return instance;};
+	int getRange() { return last_range;};
 	inline void addnode(const node &n) {nodeset[n.id]=n; };
 	void addnodes(int nr_node);
 	inline void addedge(const nodepair &pair) { edgeset[pair]=true;}
@@ -40,6 +43,8 @@ public:
 	inline bool is_start() { return !is_stoped;};
 	inline void start() {is_stoped = false;};
 private:
+	static nodecontroller *instance;
 	bool is_stoped;
+	int last_range;
 };
 
