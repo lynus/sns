@@ -22,7 +22,9 @@ class snsApp : public AppNative {
 	  void prepareSettings( Settings *settings );
 	void setup();
 	void mouseDown( MouseEvent event );	
+	void mouseUp( MouseEvent event );
 	void mouseWheel( MouseEvent event );
+	void mouseDrag( MouseEvent event);
 	void keyDown( KeyEvent event);
 	void update();
 	void draw();
@@ -58,7 +60,7 @@ void snsApp::setup()
 
 void snsApp::mouseDown( MouseEvent event )
 {
-	if ( event.isLeft() && !controller.is_start() ) {
+	if ( event.isLeft() /*&& !controller.is_start() */) {
 		float mouse_x = (float)event.getX()/CONFIG(win_width);
 		float mouse_y = (float)event.getY()/CONFIG(win_height);
 		//mouse's position need to be convert back to node's space 
@@ -67,6 +69,11 @@ void snsApp::mouseDown( MouseEvent event )
 		controller.getSelectNode(mouse_x,mouse_y);
 	}
 }
+
+void snsApp::mouseUp( MouseEvent event)
+{
+	controller.selected_node = -1;
+}
 void snsApp::mouseWheel( MouseEvent event)
 {
 	float  wheel = event.getWheelIncrement();
@@ -74,6 +81,7 @@ void snsApp::mouseWheel( MouseEvent event)
 }
 void snsApp::keyDown( KeyEvent event)
 {
+	console()<<"enter keyDown"<<std::endl;
 	switch (event.getChar()) {
 	case 'q':
 	case 'Q':
@@ -130,6 +138,11 @@ void snsApp::keyDown( KeyEvent event)
 	}
 }
 
+void snsApp::mouseDrag( MouseEvent event) 
+{
+	console()<<"enter mouse Drag\n"<<event.getX()<<"  "<<event.getY()<<std::endl;
+
+}
 void snsApp::update()
 {
 	//eye has updated by dealing with user input

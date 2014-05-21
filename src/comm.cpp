@@ -73,8 +73,17 @@ void comm::getNodes(nodecontroller::NS &nodeset,int scale,int x,int y,int &range
 			return;
 		}
 	}
-	ss<<x<<','<<y<<','<<scale<<std::endl;
+	
 	try{ 
+		//handle mouse drag
+		int sid = nodecontroller::get()->selected_node;
+		if (sid  != -1) {
+			node _node = nodeset[sid];
+			ss<<"drag\n"<<_node.id<<','<<_node.pos.x<<','<<_node.pos.y<<'\n';
+			n = sock.write_some(buf.data());
+			buf.consume(n);
+		}
+		ss<<x<<','<<y<<','<<scale<<std::endl;
 		n = sock.write_some(buf.data());
 		buf.consume(n);
 		int nRead =0;

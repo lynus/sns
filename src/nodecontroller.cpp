@@ -39,10 +39,9 @@ void nodecontroller::randomset()
 		
 void node::draw()
 {
-	if (id == -2)
-		gl::color(1.0f,1.0f,1.0f);
-	else if(id == -1)
-		gl::color(1.0f,0.0f,0.0f);
+	int sid = nodecontroller::get()->selected_node;
+	if (sid == id)
+		gl::color(1.0f,0.5f,0.5f);
 	else 
 		gl::color(1.0f*weight,0.0f,1.0f*(1-weight));
 		
@@ -72,8 +71,6 @@ void nodecontroller::drawEdge()
 }
 void nodecontroller::draw()
 {
-	if (is_stoped)
-		return;
 	drawEdge();
 	auto it = nodeset.begin();
 	for( ;it != nodeset.end(); it++)
@@ -108,7 +105,7 @@ void nodecontroller::update()
 	}
 }
 
-void nodecontroller::getSelectNode(float mx,float my)
+void  nodecontroller::getSelectNode(float mx,float my)
 {
 	// find the closest node and close enough 
 	auto sit = nodeset.end();
@@ -120,8 +117,5 @@ void nodecontroller::getSelectNode(float mx,float my)
 			sit = it;
 		}
 	if (sit != nodeset.end() && dis < 0.005)
-		sit->second.id = -1;
-	node n;
-	n.set(-2,Vec2f(mx,my),3);
-	//addnode(n);
+		selected_node = sit->second.id;
 }
