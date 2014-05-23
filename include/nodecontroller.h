@@ -27,7 +27,7 @@ class nodecontroller {
 public:
 	typedef std::map<int,node> NS;
 	nodecontroller(int nr_node);
-	nodecontroller() { last_range = -1; instance = this; selected_node =-1;};
+	nodecontroller() { last_range = -1; instance = this; selected_node_id =-1;};
 	static nodecontroller * get(){return instance;};
 	int getRange() { return last_range;};
 	inline void addnode(const node &n) {nodeset[n.id]=n; };
@@ -39,10 +39,12 @@ public:
 	void update();
 	void needUpdateNow();
 	void getSelectNode(float mx,float my);
-	int selected_node;
+	void updateSelectedNode(float x,float y);
 	void swi(){ is_stoped = !is_stoped;};
 	inline bool is_start() { return !is_stoped;};
 	inline void start() {is_stoped = false;};
+	inline void stop() {is_stoped = true;};
+	int selected_node_id;
 private:
 	static nodecontroller *instance;
 	bool is_stoped;

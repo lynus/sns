@@ -11,6 +11,60 @@ using namespace ci;
 
 #define min(x,y) (x)<=(y)?(x):(y)
 #define max(x,y) (x)>=(y)?(x):(y)
+
+Matrix44f modelview;
+Matrix44f projection;
+Area viewport;
+Vec3f unproject(const Vec3f &pt)
+{
+ /* find the inverse modelview-projection-matrix */
+ Matrix44f a = projection * modelview;
+ a.invert(0.0f);
+
+ /* transform to normalized coordinates in the range [-1, 1] */
+ Vec4f in;
+ in.x = (pt.x - viewport.getX1())/viewport.getWidth()*2.0f-1.0f;
+ in.y = (pt.y - viewport.getY1())/viewport.getHeight()*2.0f-1.0f;
+ in.z = 2.0f * pt.z - 1.0f;
+ in.w = 1.0f;
+
+ /* find the object's coordinates */
+ Vec4f out = a * in;
+ if(out.w != 0.0f) out.w = 1.0f / out.w;
+
+ /* calculate output */
+ Vec3f result;
+ result.x = out.x * out.w;
+ result.y = out.y * out.w;
+ result.z = out.z * out.w;
+ 
+ return result;
+}
+
+Vec3f screenToWorld(float x, float y, float z)
+{ 
+ Vec3f p = Vec3f(x, y, z);
+
+ /* adjust y (0,0 is lowerleft corner in OpenGL) */ 
+ p.y = (viewport.getHeight() - p.y);
+
+ /* near plane intersection */
+ p.z = 0.0f;
+ Vec3f p0 = unproject(p);
+
+ /* far plane intersection */
+ p.z = 1.0f;
+ Vec3f p1 = unproject(p);
+
+ /* find (x, y) coordinates */
+ float t = (z - p0.z) / (p1.z - p0.z);
+ p.x = (p0.x + t * (p1.x - p0.x));
+ p.y = (p0.y + t * (p1.y - p0.y));
+ p.z = z;
+ return p;
+}
+
+
 static void getxy(float _scale, Vec2f p, int &x, int &y)
 {
 	int scale = (int)ceil(_scale);
@@ -46,19 +100,6 @@ void eye::update()
 {
 	if (need_update == false)
 		return;
-	//upleft position of the viewport
-	/*ci::Vec2i reso = ci::app::AppNative::get()->getWindowSize();
-	float realheight = pos.z*reso.y;
-	ci::Vec3f realpos(pos.x*reso.x, pos.y*reso.y,realheight);
-	cam.lookAt(realpos,Vec3f(pos.x*reso.x,pos.y*reso.y,0.0),Vec3f::yAxis());
-	gl::setModelView(cam);
-	need_update = false;*/
-	//glMatrixMode(GL_MODELVIEW);
-	gl::pushMatrices();
-	gl::translate(Vec3f(0.5f,0.5f,0.0f)*800);
-	gl::scale(Vec2f(pow(2,scale),pow(2,scale)));
-	gl::translate(Vec3f(-0.5f,-0.5f,0.0f)*800);
-	gl::translate(-Vec2f(pos.x-0.5,pos.y-0.5)*800);
 	//glOrtho(0,config::get()->win_width,0,config::get()->win_height,0.0f,1.0f);
 }
 
@@ -83,6 +124,10 @@ void eye::setPos(int dir, float delta)
 
 void eye::convertMouse(float &mx, float &my)
 {
-	mx = (mx-pos.x)/pow(2,scale)+0.5;
-	my = (my-pos.y)/pow(2,scale)+0.5;
+	modelview = gl::getModelView();
+	projection = gl::getProjection();
+	viewport = gl::getViewport();
+	Vec3f p = screenToWorld(mx, my);
+	mx = p.x;
+	my = p.y;	
 }

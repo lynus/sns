@@ -3,6 +3,7 @@
 #include "cinder/Camera.h"
 using namespace ci;
 
+Vec3f screenToWorld(float x, float y, float z=0.0f);
 class eye {
 public:
 	static eye * get(){return instance;};

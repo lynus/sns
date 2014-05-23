@@ -27,6 +27,7 @@ class snsApp : public AppNative {
 	void mouseDrag( MouseEvent event);
 	void keyDown( KeyEvent event);
 	void update();
+	void resize();
 	void draw();
 	void reset() {io.reset();};
 	config myconfig;
@@ -58,21 +59,31 @@ void snsApp::setup()
 	panelUI->addButton("Reset",std::bind(&snsApp::reset,this));
 }
 
+void snsApp::resize()
+{
+	Vec2i win_size =  getWindowSize();
+	CONFIG(win_width) = win_size.x;
+	CONFIG(win_height) = win_size.y;
+}
 void snsApp::mouseDown( MouseEvent event )
 {
-	if ( event.isLeft() /*&& !controller.is_start() */) {
-		float mouse_x = (float)event.getX()/CONFIG(win_width);
-		float mouse_y = (float)event.getY()/CONFIG(win_height);
+	if ( event.isLeft()) {
+		float mouse_x = (float)event.getX();
+		float mouse_y = (float)event.getY();
 		//mouse's position need to be convert back to node's space 
 		//in order to perform selection detection
 		myeye.convertMouse(mouse_x,mouse_y);
 		controller.getSelectNode(mouse_x,mouse_y);
+		if (controller.selected_node_id != -1)
+			controller.stop();
 	}
 }
-
-void snsApp::mouseUp( MouseEvent event)
-{
-	controller.selected_node = -1;
+void snsApp::mouseUp( MouseEvent event ) 
+{ 
+	if(controller.selected_node_id != -1) {
+		controller.start();
+		// comm should set selected_node_id to -1 after update
+	}
 }
 void snsApp::mouseWheel( MouseEvent event)
 {
@@ -81,7 +92,6 @@ void snsApp::mouseWheel( MouseEvent event)
 }
 void snsApp::keyDown( KeyEvent event)
 {
-	console()<<"enter keyDown"<<std::endl;
 	switch (event.getChar()) {
 	case 'q':
 	case 'Q':
@@ -132,7 +142,8 @@ void snsApp::keyDown( KeyEvent event)
 			myeye.setPos(eye::VERTICAL, +0.1f);
 			break;
 		case KeyEvent::KEY_SPACE:
-			controller.swi();
+			if (controller.selected_node_id != -1)
+				controller.swi();
 		default:
 			break;
 	}
@@ -141,7 +152,13 @@ void snsApp::keyDown( KeyEvent event)
 void snsApp::mouseDrag( MouseEvent event) 
 {
 	console()<<"enter mouse Drag\n"<<event.getX()<<"  "<<event.getY()<<std::endl;
-
+	if (controller.selected_node_id != -1) {
+		float x = event.getX();
+		float y = event.getY();
+		myeye.convertMouse(x,y);
+		controller.updateSelectedNode( x,y );
+	}
+	
 }
 void snsApp::update()
 {
